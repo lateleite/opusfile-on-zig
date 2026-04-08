@@ -1,0 +1,24 @@
+.{
+    .name = .opusfile,
+    .fingerprint = 0xc8c752346b9a24d2,
+    .version = "0.13.0-git", // use the latest unreleased commit for fixes
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        .opus = .{
+            .url = "git+https://github.com/lateleite/opus-on-zig.git",
+            .hash = "opus-1.6.1-H5oCMJ07AAC7PwzGeycOjaNNY_18aWiQrux7AaGr3oTm",
+        },
+        .ogg = .{
+            .url = "git+https://github.com/lateleite/ogg-on-zig.git",
+            .hash = "ogg-1.3.6-rt5OMAkHAADD9W0wAUrgZW9eo2prpVd5EMs7ElLAbwrf",
+        },
+        .opusfile = .{
+            .url = "https://github.com/xiph/opusfile/archive/6dfd29e7adb87f2e193575fc3fa88cbf1a0b27df.tar.gz",
+            .hash = "N-V-__8AAExiCADTeOdlH-DcKSXEgNKd-6Np3JnHiKYq_fTP",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+    },
+}
