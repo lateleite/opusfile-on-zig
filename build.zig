@@ -8,6 +8,7 @@ pub fn build(b: *std.Build) void {
     const link_mode = b.option(std.builtin.LinkMode, "link-mode", "Linking mode for the libraries") orelse
         .static;
     const pic = b.option(bool, "pic", "Enable Position Independent Code option");
+    const use_standalone_opus = b.option(bool, "standalone-opus", "Should opusfile link its own Opus library?") orelse true;
 
     const upstream = b.dependency("opusfile", .{});
 
@@ -16,12 +17,6 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     const lib_ogg = dep_ogg.artifact("ogg");
-    const dep_opus = b.dependency("opus", .{
-        .target = target,
-        .optimize = optimize,
-    });
-    const lib_opus = dep_opus.artifact("opus");
-
     const lib = b.addLibrary(.{
         .name = "opusfile",
         .linkage = link_mode,
@@ -43,16 +38,25 @@ pub fn build(b: *std.Build) void {
         },
     });
 
-    lib.addIncludePath(dep_opus.path("include"));
     lib.addIncludePath(upstream.path("include"));
-
-    lib.linkLibrary(lib_opus);
     lib.linkLibrary(lib_ogg);
 
     lib.installHeadersDirectory(upstream.path("include"), "", .{});
     // opusfile's headers need ogg's and opus' headers
     lib.installLibraryHeaders(lib_ogg);
-    lib.installLibraryHeaders(lib_opus);
+
+    if (use_standalone_opus) {
+        const maybe_dep_opus = b.lazyDependency("opus", .{
+            .target = target,
+            .optimize = optimize,
+        });
+        if (maybe_dep_opus) |dep_opus| {
+            const lib_opus = dep_opus.artifact("opus");
+            lib.addIncludePath(dep_opus.path("include"));
+            lib.linkLibrary(lib_opus);
+            lib.installLibraryHeaders(lib_opus);
+        }
+    }
 
     b.installArtifact(lib);
 }

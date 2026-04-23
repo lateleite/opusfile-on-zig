@@ -4,6 +4,8 @@ This repository wraps the upstream Opusfile library source code with Zig's build
 
 Zig 0.15.2 is required.
 
+**NOTE**: opusurl is **NOT** packaged at the moment.
+
 ## Installing as a `build.zig.zon` package
 
 Run in your Zig project:
@@ -24,8 +26,15 @@ pub fn build(b: *std.Build) !void {
         // .@"link-mode" = .dynamic,
         // force enable or disable Position Independent Code (PIC) 
         // .pic = true,
+        // don't let opusfile build its own opus library.
+        // this is useful if you have your own custom Opus library.
+        // .@"standalone-opus" = false,
     });
     const lib_opusfile = dep_opusfile.artifact("opusfile");
+
+    // if 'standalone-opus' is false, link your opus library to opusfile
+    // const lib_opus = ...
+    // lib_opusfile.linkLibrary(lib_opus);
 
     // ...then link the library to your module
     your_module.linkLibrary(lib_opusfile);

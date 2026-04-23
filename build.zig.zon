@@ -7,6 +7,7 @@
         .opus = .{
             .url = "https://github.com/allyourcodebase/opus/archive/b6462e9a9948c6d94787b899374c23bc1b527c97.tar.gz",
             .hash = "opus-0.0.2-vuF-cM1QAADDkw1UZlGEk37xGmPuqOofkgkY0caAPbz9",
+            .lazy = true,
         },
         .ogg = .{
             .url = "git+https://github.com/lateleite/ogg-on-zig.git",
