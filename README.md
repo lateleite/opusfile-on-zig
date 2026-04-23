@@ -20,6 +20,10 @@ pub fn build(b: *std.Build) !void {
     const dep_opusfile = b.dependency("opusfile", .{
         .target = target,
         .optimize = optimize,
+        // force linking mode (default is static)
+        // .@"link-mode" = .dynamic,
+        // force enable or disable Position Independent Code (PIC) 
+        // .pic = true,
     });
     const lib_opusfile = dep_opusfile.artifact("opusfile");
 

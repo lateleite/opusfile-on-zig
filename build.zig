@@ -5,6 +5,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const link_mode = b.option(std.builtin.LinkMode, "link-mode", "Linking mode for the libraries") orelse
+        .static;
     const pic = b.option(bool, "pic", "Enable Position Independent Code option");
 
     const upstream = b.dependency("opusfile", .{});
@@ -22,7 +24,7 @@ pub fn build(b: *std.Build) void {
 
     const lib = b.addLibrary(.{
         .name = "opusfile",
-        .linkage = .static,
+        .linkage = link_mode,
         .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
