@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .opus = .{
-            .url = "git+https://github.com/lateleite/opus-on-zig.git",
-            .hash = "opus-1.6.1-H5oCMJ07AAC7PwzGeycOjaNNY_18aWiQrux7AaGr3oTm",
+            .url = "https://github.com/allyourcodebase/opus/archive/b6462e9a9948c6d94787b899374c23bc1b527c97.tar.gz",
+            .hash = "opus-0.0.2-vuF-cM1QAADDkw1UZlGEk37xGmPuqOofkgkY0caAPbz9",
         },
         .ogg = .{
             .url = "git+https://github.com/lateleite/ogg-on-zig.git",
