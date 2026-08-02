@@ -2,16 +2,16 @@
     .name = .opusfile,
     .fingerprint = 0xc8c752346b9a24d2,
     .version = "0.13.0-git", // use the latest unreleased commit for fixes
-    .minimum_zig_version = "0.15.2",
+    .minimum_zig_version = "0.17.0-dev.1387+01b60634c",
     .dependencies = .{
         .opus = .{
-            .url = "https://github.com/allyourcodebase/opus/archive/b6462e9a9948c6d94787b899374c23bc1b527c97.tar.gz",
-            .hash = "opus-0.0.2-vuF-cM1QAADDkw1UZlGEk37xGmPuqOofkgkY0caAPbz9",
+            .url = "git+https://github.com/allyourcodebase/opus#d6f0a32ce7762b2529caa98fc2ab3b5056723ea8",
+            .hash = "opus-0.0.2-vuF-cM-SAADUMrOp7kLeIKj609YA_WMFWSZgGkGBiltV",
             .lazy = true,
         },
         .ogg = .{
-            .url = "git+https://github.com/lateleite/ogg-on-zig.git",
-            .hash = "ogg-1.3.6-rt5OMAkHAADD9W0wAUrgZW9eo2prpVd5EMs7ElLAbwrf",
+            .url = "git+https://github.com/lateleite/ogg-on-zig.git#f75a87fb8654be712cc0f01117fafbfefea4f1cd",
+            .hash = "ogg-1.3.6-rt5OMFgHAAC4SrlO8WOrsR6gg2622tiFcEE-TXNruiVC",
         },
         .opusfile = .{
             .url = "https://github.com/xiph/opusfile/archive/6dfd29e7adb87f2e193575fc3fa88cbf1a0b27df.tar.gz",

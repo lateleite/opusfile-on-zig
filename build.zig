@@ -1,7 +1,8 @@
 // TODO: package opusurl? it needs openssl
 const std = @import("std");
+const log = std.log;
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -28,7 +29,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    lib.addCSourceFiles(.{
+    lib.root_module.addCSourceFiles(.{
         .root = upstream.path("src"),
         .files = &.{
             "info.c",
@@ -38,25 +39,47 @@ pub fn build(b: *std.Build) void {
         },
     });
 
-    lib.addIncludePath(upstream.path("include"));
-    lib.linkLibrary(lib_ogg);
+    lib.root_module.addIncludePath(upstream.path("include"));
+    lib.root_module.linkLibrary(lib_ogg);
 
     lib.installHeadersDirectory(upstream.path("include"), "", .{});
     // opusfile's headers need ogg's and opus' headers
     lib.installLibraryHeaders(lib_ogg);
 
     if (use_standalone_opus) {
-        const maybe_dep_opus = b.lazyDependency("opus", .{
+        const dep_opus = try b.dependencyLazy("opus", .{
             .target = target,
             .optimize = optimize,
         });
-        if (maybe_dep_opus) |dep_opus| {
-            const lib_opus = dep_opus.artifact("opus");
-            lib.addIncludePath(dep_opus.path("include"));
-            lib.linkLibrary(lib_opus);
-            lib.installLibraryHeaders(lib_opus);
-        }
+        const lib_opus = findFirstArtifact(dep_opus, "opus", .static);
+        lib.root_module.addIncludePath(dep_opus.path("include"));
+        lib.root_module.linkLibrary(lib_opus);
+        lib.installLibraryHeaders(lib_opus);
     }
 
     b.installArtifact(lib);
+}
+
+// workaround to std.Build.Dependency.artifact not allowing you to specify a linkage mode to look up for.
+// needed with All Your Codebase's Opus package
+pub fn findFirstArtifact(
+    d: *std.Build.Dependency,
+    name: []const u8,
+    linkage: ?std.builtin.LinkMode,
+) *std.Build.Step.Compile {
+    var found: ?*std.Build.Step.Compile = null;
+    for (d.builder.install_tls.step.dependencies.items) |dep_step| {
+        const inst = dep_step.cast(std.Build.Step.InstallArtifact) orelse continue;
+        if (std.mem.eql(u8, inst.artifact.name, name) and linkage == inst.artifact.linkage) {
+            found = inst.artifact;
+            break;
+        }
+    }
+    return found orelse {
+        for (d.builder.install_tls.step.dependencies.items) |dep_step| {
+            const inst = dep_step.cast(std.Build.Step.InstallArtifact) orelse continue;
+            log.info("available artifact: {q}", .{inst.artifact.name});
+        }
+        std.debug.panic("unable to find artifact {q}", .{name});
+    };
 }
